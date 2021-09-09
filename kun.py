@@ -1,4 +1,4 @@
-# Modules and stuff
+#modules and stuff
 import os
 import random
 import discord
@@ -14,11 +14,10 @@ from discord_webhook import DiscordWebhook
 from discordTogether import DiscordTogether
 
 
-# Environment variables and calling modules
+#environment variables and calling modules
 keep_alive()
 TOKEN = os.environ['token']
 weburl = os.environ['url']
-noNe = os.environ['dm-er']
 
 # 2
 intents = discord.Intents().all()
@@ -28,7 +27,7 @@ slash = SlashCommand(bot, sync_commands=True)
 togetherControl = DiscordTogether(bot)
 
 
-# Bot events
+#commands and events
 @bot.event 
 async def on_ready():
   print('Connected to bot: {}'.format(bot.user.name))
@@ -41,10 +40,9 @@ async def on_message(message):
     embed = discord.Embed(title=" ", description=" ")
     embed.add_field(name='DM by '+message.author.name, value=message.content)
     await channel.send(embed=embed)
-  await bot.process_commands(message)
 
-  
-# Bot commands from here
+    
+  await bot.process_commands(message)
 
 @bot.command(name="ping")
 async def ping(ctx):
@@ -113,7 +111,7 @@ async def react(ctx, emoji, idd):
 	await message.add_reaction(emoji)
 
 
-@bot.command()
+@slash.slash(name="Spotify", description="Shows the spotify activity of mentioned user")
 async def spotify(ctx, user: discord.Member = None):
 	if user == None:
 		user = ctx.author
@@ -134,7 +132,7 @@ async def spotify(ctx, user: discord.Member = None):
 
 
 #studycommand
-@bot.command()
+@slash.slash(name="Studying",description="Follows the pomodoro concept and creates a timer for specified time")
 async def studying(ctx, seconds, *arg):
 	await ctx.message.delete()
 
@@ -210,8 +208,8 @@ Sq_list = [
 ]
 
 
-@slash.slash(name="Squeeze",description="Hug the mentioned")
-async def squeeze(stx, member: discord.Member):
+@slash.slash(name="Hug",description="Hug the mentioned")
+async def hug(stx, member: discord.Member):
 	m = len(Sq_list)
 	n = random.randint(0, m - 1)
 	s = f"{stx.author.mention}" + Sq_list[n] + f"{member.mention}"
@@ -236,7 +234,7 @@ async def status(stx,*args):
   await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name= act))
 
 
-@bot.command()
+@slash.slash(name="Members",description="Shows the list of members in the server")
 async def members(ctx):
   embed = discord.Embed(title="Member List", description=" ", color = 708090)
   n = 0
@@ -244,6 +242,7 @@ async def members(ctx):
     n += 1
     embed.add_field(name="Member "+str(n)+":", value=i.name)
   await ctx.send(embed=embed)
+
 
 
 bot.run(TOKEN)
